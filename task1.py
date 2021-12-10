@@ -6,9 +6,16 @@ class Student:
         self.finished_courses = []
         self.courses_in_progress = []
         self.grades = {}
+        self.rates_lktr = {}
 
-    def rate_lktr(self,lektor):
-        pass
+    def rate_lktr(self, lektr, course, rates_lktr):
+        if isinstance(lektr, Lecturer) and course in self.courses_attached and course in lektr.courses_in_progress:
+            if course in lektr.grades:
+                self.rates_lktr[course] += [rates_lktr]
+            else:
+                self.rates_lktr[course] = [rates_lktr]
+        else:
+            return 'Ошибка'
         
 class Mentor:
     def __init__(self, name, surname):
