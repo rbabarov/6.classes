@@ -6,8 +6,7 @@ class Student:
         self.finished_courses = []
         self.courses_in_progress = []
         self.grades = {}
-        
-
+    
     def rate_lktr(self, lektr, course, rates_lktr):
         
         if isinstance(lektr, Lecturer) and course in self.courses_in_progress:           
@@ -52,7 +51,6 @@ class Mentor:
         self.name = name
         self.surname = surname
         self.courses_attached = []        
-  
 
 class Lecturer(Mentor):
     def __init__(self,name,surname):
@@ -91,7 +89,6 @@ class Reviewer(Mentor):
     def __init__(self,name,surname):
         super().__init__(name,surname)
         
-
     def rate_hw(self, student, course, grade):
         if isinstance(student, Student)  and course in student.courses_in_progress:
             if course in student.grades:
@@ -106,22 +103,92 @@ class Reviewer(Mentor):
         surnamestr = f'Фамилия: {self.surname}' 
         return namestr+surnamestr
 
-best_student = Student('Ruoy', 'Eman', 'male')
-best_student.courses_in_progress += ['Python']
-best_student.finished_courses += ['1с']
-lektor = Lecturer('Bruce','Wilis')
-lektor.courses_attached += ['Python']
-best_student.rate_lktr(lektor,'Python',25)
-best_student.rate_lktr(lektor,'Python',30)
-best_student.rate_lktr(lektor,'Python',35)
+def average_grade_students(students,course):
+    middle_grade = 0
+    count_students = 0
+    for student in students:
+        if course in student.courses_in_progress:
+            middle_grade += Student.get_middle_grade(student)
+            count_students +=1
 
-cool_mentor = Mentor('Some', 'Buddy')
-cool_mentor.courses_attached += ['Python']
+        if count_students == 0:
+            result = 'На этом курсе у студентов еще нет оценок'
+        else:
+            result = middle_grade/count_students
+        
+    return result
 
-cool_reviewer = Reviewer('Bill', 'Gates') 
-cool_reviewer.rate_hw(best_student, 'Python', 10)
-cool_reviewer.rate_hw(best_student, 'Python', 20)
-cool_reviewer.rate_hw(best_student, 'Python', 30)
-print(best_student) 
-#print(best_student.grades)
+def average_grade_lektors(lektors,course):
+    middle_grade = 0
+    count_lektors = 0
+    for lektor in lektors:
+        if course in lektor.courses_attached:
+            middle_grade += Lecturer.get_middle_rate(lektor)
+            count_lektors +=1
+
+        if count_lektors == 0:
+            result = 'На этом курсе у лекторов еще нет оценок'
+        else:
+            result = middle_grade/count_lektors
+        
+    return result
+
+ruoy_student = Student('Ruoy', 'Eman', 'male')
+ruoy_student.courses_in_progress += ['Python']
+ruoy_student.finished_courses += ['1С программирование']
+
+tina_student = Student('Tina','Kandelaki','female')
+tina_student.courses_in_progress += ['Python']
+tina_student.finished_courses += ['Web программирование']
+
+bruce_lektor = Lecturer('Bruce','Willis')
+bruce_lektor.courses_attached += ['Python']
+ruoy_student.rate_lktr(bruce_lektor,'Python',25)
+ruoy_student.rate_lktr(bruce_lektor,'Python',30)
+ruoy_student.rate_lktr(bruce_lektor,'Python',35)
+
+arnold_lektor = Lecturer('Arnold','Schwarzenegger')
+arnold_lektor.courses_attached += ['Python']
+tina_student.rate_lktr(arnold_lektor,'Python',45)
+tina_student.rate_lktr(arnold_lektor,'Python',60)
+tina_student.rate_lktr(arnold_lektor,'Python',70)
+
+same_mentor = Mentor('Some', 'Buddy')
+same_mentor.courses_attached += ['Python']
+
+kirill_mentor = Mentor('Kirill', 'Smirnov')
+kirill_mentor.courses_attached += ['Python']
+
+bill_reviewer = Reviewer('Bill', 'Gates') 
+bill_reviewer.rate_hw(ruoy_student, 'Python', 10)
+bill_reviewer.rate_hw(ruoy_student, 'Python', 20)
+bill_reviewer.rate_hw(ruoy_student, 'Python', 30)
+
+steven_reviewer = Reviewer('Steven','Jobs')
+steven_reviewer.rate_hw(tina_student, 'Python', 90)
+steven_reviewer.rate_hw(tina_student, 'Python', 90)
+steven_reviewer.rate_hw(tina_student, 'Python', 60)
+
+students = []
+students += [ruoy_student]
+students += [tina_student]
+
+lektors = []
+lektors += [bruce_lektor]
+lektors += [arnold_lektor]
+
+#средние оценки студентов и лекторов
+print('Средняя оценка студентов на курсе Python: ', average_grade_students(students,'Python'))
+print('Средняя оценка лекторов на курсе Python: ', average_grade_lektors(lektors,'Python'))
+#принтуем проверку str методов
+print()
+print(tina_student)
+print()
+print(bruce_lektor)
+print()
+print(steven_reviewer)
+print()
+#принтуем проверку сравнения
+print(tina_student==ruoy_student)
+print(bruce_lektor==arnold_lektor)
 
